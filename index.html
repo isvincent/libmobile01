@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#15253c">
+<title>楊梅高中圖書館｜新生利用教育闖關</title>
+<style>
+:root{
+  --ink:#15253c;--ink2:#233a5b;--paper:#f4eddc;--gold:#f4c95d;--mint:#79d6aa;
+  --red:#ef6f6c;--blue:#77b9e8;--panel:rgba(15,25,45,.94);--white:#fffaf0;
+  --safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#101827;color:var(--white);font-family:"Microsoft JhengHei","Noto Sans TC",system-ui,sans-serif}
+button,input,select{font:inherit}
+button{cursor:pointer}
+#app{position:fixed;inset:0;display:grid;grid-template-rows:auto 1fr auto;background:linear-gradient(#1b2940,#101827)}
+#hud{height:58px;padding:calc(6px + var(--safe-t)) 10px 6px;display:flex;align-items:center;gap:8px;background:#142039;border-bottom:3px solid #07101e;z-index:20;box-shadow:0 2px 0 #2b4367 inset}
+.brand{display:flex;align-items:center;gap:7px;min-width:0}.crest{width:38px;height:38px;display:grid;place-items:center;background:#f1d86e;color:#17233b;border:3px solid #fff;border-radius:50%;box-shadow:0 0 0 3px #315a82;font-size:20px}.brandText{min-width:0}.brandTitle{font-size:14px;font-weight:900;white-space:nowrap}.brandSub{font-size:10px;color:#bcd2ef;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hudPill{height:38px;min-width:58px;padding:4px 9px;border:2px solid #425c87;border-radius:8px;background:#203452;display:flex;flex-direction:column;justify-content:center;align-items:center;box-shadow:0 2px 0 #0b1425;font-size:11px}.hudPill b{font-size:14px;color:#fff}.hudGrow{flex:1;min-width:70px}.progressTrack{height:10px;background:#081120;border:2px solid #425c87;border-radius:8px;overflow:hidden}.progressFill{height:100%;width:0;background:linear-gradient(90deg,#74d6a8,#f1d56e);transition:width .3s}
+.iconBtn{width:40px;height:40px;border:2px solid #536d9b;border-radius:8px;background:#233a5b;color:white;box-shadow:0 3px 0 #091222;font-size:20px}
+#stage{position:relative;min-height:0;overflow:hidden;background:#0c1626;touch-action:none}
+#game{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges}
+#zoneLabel{position:absolute;top:12px;left:50%;transform:translateX(-50%);padding:7px 12px;border:2px solid #fff6d5;border-radius:6px;background:rgba(11,21,38,.86);font-weight:900;font-size:13px;box-shadow:0 3px 0 #060b14;pointer-events:none;opacity:0;transition:opacity .25s}
+#toast{position:absolute;left:50%;bottom:16px;transform:translate(-50%,20px);max-width:min(520px,88vw);padding:9px 13px;background:rgba(14,25,45,.96);border:2px solid #89b4dd;border-radius:8px;color:#fff;box-shadow:0 5px 0 #070e19;opacity:0;transition:.25s;pointer-events:none;font-size:13px;z-index:8;text-align:center}#toast.show{opacity:1;transform:translate(-50%,0)}
+#missionCard{position:absolute;left:10px;top:10px;width:min(310px,48vw);padding:10px;background:rgba(12,22,39,.92);border:2px solid #f4c95d;border-radius:8px;box-shadow:0 5px 0 rgba(0,0,0,.5);z-index:6;pointer-events:none}.mTitle{font-weight:900;color:#ffe083;font-size:14px}.mText{font-size:12px;line-height:1.45;margin-top:4px;color:#e7effa}.mHint{font-size:11px;color:#8ddbb8;margin-top:5px}
+#interactHint{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);display:none;align-items:center;gap:7px;padding:7px 12px;border-radius:999px;background:rgba(11,19,34,.94);border:2px solid #f5d774;font-size:12px;font-weight:800;z-index:7;pointer-events:none}.keycap{display:inline-grid;place-items:center;min-width:24px;height:24px;padding:0 6px;border:2px solid #fff;border-radius:5px;background:#35567f;box-shadow:0 2px 0 #0a1323}
+#controls{height:126px;padding:8px 12px calc(8px + var(--safe-b));display:flex;justify-content:space-between;align-items:center;background:#121d31;border-top:3px solid #070e1b;z-index:20}
+.pad{width:112px;height:112px;position:relative}.pad button{position:absolute;width:42px;height:42px;border:2px solid #7389b2;background:#253b5d;color:#fff;border-radius:8px;box-shadow:0 4px 0 #070f1d;font-size:22px;font-weight:900}.pad button:active,.actionBtn:active,.smallAction:active{transform:translateY(3px);box-shadow:0 1px 0 #070f1d}.up{left:35px;top:0}.down{left:35px;bottom:0}.left{left:0;top:35px}.right{right:0;top:35px}
+.actionCluster{display:flex;align-items:center;gap:10px}.actionBtn{width:78px;height:78px;border:4px solid #ffe89e;border-radius:50%;background:linear-gradient(#ef7c68,#c64c4c);color:white;font-weight:900;box-shadow:0 6px 0 #6b252b,0 0 0 3px #1d2e49;font-size:16px}.smallAction{width:50px;height:50px;border:2px solid #8ba4d1;border-radius:12px;background:#284463;color:white;box-shadow:0 4px 0 #07101f;font-size:21px}
+.overlay{position:fixed;inset:0;background:rgba(6,12,23,.82);z-index:100;display:none;align-items:center;justify-content:center;padding:16px}.overlay.open{display:flex}.panel{width:min(760px,96vw);max-height:92vh;overflow:auto;background:#f7f0df;color:#17233a;border:4px solid #17233a;border-radius:12px;box-shadow:0 0 0 4px #f4c95d,0 18px 50px rgba(0,0,0,.55)}.panelHead{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:#203b60;color:white;border-bottom:4px solid #12223a}.panelHead h2{margin:0;font-size:20px}.closeBtn{width:36px;height:36px;border:2px solid white;border-radius:8px;background:#bc4d55;color:white;font-weight:900}.panelBody{padding:16px}.hero{background:linear-gradient(135deg,#d7e7ce,#b8d6ea);padding:20px;border:3px solid #1d3858;border-radius:9px;text-align:center}.heroLogo{font-size:52px}.hero h1{font-size:28px;line-height:1.2;margin:5px 0}.hero p{margin:6px auto;max-width:620px;line-height:1.6}.formGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}.field label{display:block;font-size:12px;font-weight:900;margin-bottom:4px}.field input{width:100%;padding:10px;border:3px solid #243d5d;border-radius:7px;background:#fff}.primary,.secondary,.danger{border:3px solid #17233a;border-radius:8px;padding:10px 14px;font-weight:900;box-shadow:0 4px 0 #17233a}.primary{background:#78d2a5}.secondary{background:#8fc5e8}.danger{background:#ef8a82}.primary:active,.secondary:active,.danger:active{transform:translateY(3px);box-shadow:0 1px 0 #17233a}.btnRow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin-top:12px}.note{font-size:12px;color:#40516c;line-height:1.5}.choiceGrid{display:grid;gap:9px;margin-top:12px}.choice{width:100%;text-align:left;padding:11px 12px;border:3px solid #263e5e;border-radius:8px;background:#fff;box-shadow:0 3px 0 #263e5e}.choice:hover{background:#eef7ff}.choice.correct{background:#c8f0d8}.choice.wrong{background:#ffd4d0}.factBox{padding:12px;border:3px dashed #3f6389;background:#e7f0f7;border-radius:8px;line-height:1.55;margin:10px 0}.miniTitle{font-weight:900;color:#28496d;margin:12px 0 5px}.itemSelect{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.item{padding:10px;border:3px solid #2d496c;border-radius:8px;background:#fff;text-align:left;font-weight:800}.item.selected{background:#ffe596}.statusGood{color:#14764a;font-weight:900}.statusBad{color:#b5323a;font-weight:900}.timerRing{width:110px;height:110px;border-radius:50%;margin:12px auto;display:grid;place-items:center;border:12px solid #7fadd2;background:#fff;font-size:28px;font-weight:900}.quietBar{height:18px;border:3px solid #1d3552;border-radius:9px;overflow:hidden;background:#fff}.quietFill{height:100%;width:100%;background:#70cf9d;transition:.2s}
+.tabRow{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}.tabBtn{padding:8px 11px;border:2px solid #243b59;border-radius:7px;background:#d6e6f1;font-weight:900}.tabBtn.active{background:#f3d878}.teacherSection{display:none}.teacherSection.active{display:block}.tableWrap{overflow:auto;border:2px solid #223b5e;border-radius:7px}table{border-collapse:collapse;width:100%;font-size:12px;background:white}th,td{border:1px solid #93a8be;padding:7px;text-align:left;white-space:nowrap}th{background:#d6e7f3}.barRow{display:grid;grid-template-columns:90px 1fr 42px;gap:8px;align-items:center;margin:8px 0}.bar{height:16px;border:2px solid #243a57;border-radius:8px;background:#fff;overflow:hidden}.bar>i{display:block;height:100%;background:#78d0a2}.medal{font-size:68px;text-align:center}.resultGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.resultCard{padding:12px;border:3px solid #243b5b;border-radius:8px;background:white;text-align:center}.resultCard b{display:block;font-size:26px;color:#234f73}.log{max-height:180px;overflow:auto;background:#111b2e;color:#cfe0f4;padding:9px;border-radius:8px;font:12px/1.5 ui-monospace,monospace}
+#portraitTip{display:none;position:absolute;right:8px;top:68px;z-index:9;padding:7px 9px;background:rgba(17,29,49,.9);border:2px solid #6985b0;border-radius:8px;font-size:11px}
+@media (pointer:fine) and (min-width:900px){#controls{height:84px}.pad{width:150px;height:64px}.pad button{width:42px;height:42px}.up{left:54px;top:-7px}.down{left:54px;bottom:-7px}.left{left:8px;top:11px}.right{right:8px;top:11px}.actionBtn{width:64px;height:64px}.actionCluster{margin-right:20px}}
+@media (orientation:portrait){#hud{height:64px}.brandSub{display:none}.hudPill{min-width:48px;padding:4px 5px}.hudPill:nth-of-type(2){display:none}#missionCard{width:calc(100% - 20px);max-width:none;top:8px}.mText{display:none}#controls{height:142px}#portraitTip{display:block}.panel{max-height:88vh}.hero h1{font-size:23px}.formGrid{grid-template-columns:1fr}.resultGrid{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.brandTitle{font-size:12px}.crest{width:34px;height:34px}.iconBtn{width:36px;height:36px}.panelBody{padding:12px}.itemSelect{grid-template-columns:1fr}.hero{padding:14px}.heroLogo{font-size:42px}}
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="hud">
+    <div class="brand"><div class="crest">梅</div><div class="brandText"><div class="brandTitle">楊梅高中圖書館</div><div class="brandSub">新生利用教育闖關</div></div></div>
+    <div class="hudPill"><span>樓層</span><b id="floorHud">1F</b></div>
+    <div class="hudPill"><span>素養</span><b id="scoreHud">0</b></div>
+    <div class="hudGrow"><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px"><span id="missionHud">準備開始</span><span id="progressText">0/7</span></div><div class="progressTrack"><div id="progressFill" class="progressFill"></div></div></div>
+    <button id="soundBtn" class="iconBtn" aria-label="音效">🔊</button>
+    <button id="menuBtn" class="iconBtn" aria-label="選單">☰</button>
+  </header>
+  <main id="stage">
+    <canvas id="game" aria-label="楊梅高中圖書館二維遊戲地圖"></canvas>
+    <div id="missionCard"><div class="mTitle" id="missionTitle">新生報到</div><div class="mText" id="missionText">先閱讀操作說明，開始探索圖書館。</div><div class="mHint" id="missionHint">方向鍵或左下方向鍵移動，靠近物件按「互動」。</div></div>
+    <div id="zoneLabel"></div>
+    <div id="interactHint"><span class="keycap">E</span><span id="interactText">互動</span></div>
+    <div id="toast"></div>
+    <div id="portraitTip">直式可遊玩，橫放手機可獲得更寬廣視野</div>
+  </main>
+  <footer id="controls">
+    <div class="pad" aria-label="移動控制">
+      <button class="up" data-dir="up">▲</button><button class="down" data-dir="down">▼</button><button class="left" data-dir="left">◀</button><button class="right" data-dir="right">▶</button>
+    </div>
+    <div class="actionCluster"><button id="mapBtn" class="smallAction" aria-label="地圖">🗺️</button><button id="actionBtn" class="actionBtn">互動</button><button id="bagBtn" class="smallAction" aria-label="學習歷程">📋</button></div>
+  </footer>
+</div>
+
+<div id="startOverlay" class="overlay open"><div class="panel"><div class="panelBody">
+  <div class="hero"><div class="heroLogo">🏫📚</div><h1>梅高圖書館探險隊</h1><p>你是剛入學的高一新生。請在 5–10 分鐘內完成七項任務，學會找書、借還書、使用設備，並成為懂規則、尊重他人的圖書館使用者。</p></div>
+  <div class="formGrid"><div class="field"><label for="studentName">學生姓名或暱稱</label><input id="studentName" maxlength="20" placeholder="例如：小梅"></div><div class="field"><label for="studentClass">班級</label><input id="studentClass" maxlength="12" placeholder="例如：101"></div></div>
+  <div class="factBox"><b>操作方式：</b>手機用方向鍵移動，靠近閃光物件按「互動」；電腦可用 WASD／方向鍵與 E 鍵。遊戲紀錄只保存在目前瀏覽器。</div>
+  <div class="btnRow"><button id="startBtn" class="primary">開始闖關</button><button id="resumeBtn" class="secondary" style="display:none">繼續上次進度</button><button id="teacherStartBtn" class="secondary">教師模式</button></div>
+  <p class="note" style="text-align:center">本遊戲採原創像素風校園空間，以俯視角虛擬空間操作呈現，不使用外部圖庫或網路套件。</p>
+</div></div></div>
+
+<div id="dialogOverlay" class="overlay"><div class="panel"><div class="panelHead"><h2 id="dialogTitle">互動</h2><button id="dialogClose" class="closeBtn">✕</button></div><div id="dialogBody" class="panelBody"></div></div></div>
+
+<div id="menuOverlay" class="overlay"><div class="panel"><div class="panelHead"><h2>遊戲選單</h2><button class="closeBtn" data-close="menuOverlay">✕</button></div><div class="panelBody">
+  <div class="btnRow"><button id="continueBtn" class="primary">繼續遊戲</button><button id="historyBtn" class="secondary">學習歷程</button><button id="teacherBtn" class="secondary">教師模式</button><button id="restartBtn" class="danger">重新開始</button></div>
+  <div class="factBox"><b>目前任務：</b><span id="menuMission"></span><br><b>提示：</b><span id="menuHint"></span></div>
+  <div class="miniTitle">鍵盤操作</div><p>WASD／方向鍵移動、E 或空白鍵互動、M 開啟地圖、Esc 關閉視窗。</p>
+</div></div></div>
+
+<div id="teacherOverlay" class="overlay"><div class="panel"><div class="panelHead"><h2>教師模式</h2><button class="closeBtn" data-close="teacherOverlay">✕</button></div><div class="panelBody">
+  <div class="tabRow"><button class="tabBtn active" data-tab="teachControl">課堂控制</button><button class="tabBtn" data-tab="teachRecords">學習紀錄</button><button class="tabBtn" data-tab="teachContent">教學內容</button></div>
+  <section id="teachControl" class="teacherSection active">
+    <div class="factBox">可用於課堂示範、快速跳關與觀察學生操作。教師模式不會上傳任何資料。</div>
+    <div class="btnRow"><button id="showTargetBtn" class="secondary">顯示任務目標</button><button id="jump1Btn" class="secondary">跳至 1F</button><button id="jump2Btn" class="secondary">跳至 2F</button><button id="completeMissionBtn" class="primary">完成目前任務</button></div>
+    <div class="miniTitle">選擇任務</div><select id="missionSelect" style="width:100%;padding:10px;border:3px solid #263f60;border-radius:7px"></select>
+    <div class="btnRow"><button id="goMissionBtn" class="secondary">前往此任務</button><button id="clearCurrentBtn" class="danger">清除目前進度</button></div>
+  </section>
+  <section id="teachRecords" class="teacherSection"><div class="btnRow" style="justify-content:flex-start"><button id="exportBtn" class="secondary">匯出 CSV</button><button id="clearRecordsBtn" class="danger">清除全部紀錄</button></div><div id="recordsTable" class="tableWrap"></div></section>
+  <section id="teachContent" class="teacherSection">
+    <div class="factBox"><b>核心規則：</b>開放時間 08:00–16:00；每人最多借 4 本、借期 2 週；到期前 1–2 日可續借 2 週；逾期會暫停借閱權。</div>
+    <div class="factBox"><b>館內素養：</b>不帶飲食、書包與袋子入館；不喧嘩、不奔跑、不把椅子當玩具；上課時間需帶學生證並獲教師同意；手機僅於教師授課需要時使用。</div>
+    <div class="factBox"><b>設備：</b>影印與列印需自備悠遊卡，餘額至少 10 元；黑白每頁 2 元、彩色每頁 6 元；掃描過卡但不收費。</div>
+  </section>
+</div></div></div>
+
+<div id="historyOverlay" class="overlay"><div class="panel"><div class="panelHead"><h2>我的學習歷程</h2><button class="closeBtn" data-close="historyOverlay">✕</button></div><div id="historyBody" class="panelBody"></div></div></div>
+
+<div id="mapOverlay" class="overlay"><div class="panel"><div class="panelHead"><h2>圖書館導覽地圖</h2><button class="closeBtn" data-close="mapOverlay">✕</button></div><div id="mapBody" class="panelBody"></div></div></div>
+
+<div id="resultOverlay" class="overlay"><div class="panel"><div class="panelHead"><h2>闖關完成</h2><button class="closeBtn" data-close="resultOverlay">✕</button></div><div id="resultBody" class="panelBody"></div></div></div>
+
+<script>
+(()=>{
+'use strict';
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const canvas=$('#game'), ctx=canvas.getContext('2d',{alpha:false}); ctx.imageSmoothingEnabled=false;
+const WORLD={w:1600,h:1000};
+const COLORS={wall:'#14273a',wall2:'#25435a',floor:'#b98d5f',floor2:'#c79b6b',rug:'#506f86',rug2:'#7897a8',wood:'#8b5b38',shelf:'#6d4329',book:['#d65d5d','#e7bd55','#5ca7c7','#7c72c9','#62b17e','#d78bb4'],plant:'#3f8e58',desk:'#d7c0a0',chair:'#48596b'};
+const mapData={
+  1:{name:'圖書館 1F',spawn:{x:800,y:925},stairs:{x:1420,y:885},zones:[
+    ['入口與置物櫃',0,650,180,350],['討論室',120,30,720,150],['期刊與閱覽區',180,230,640,430],['新書展示區',400,680,390,140],['讀者服務區',810,500,170,300],['資訊檢索區',1000,430,520,130],['閱讀區',1000,90,380,340],['梅高特藏區',1390,60,150,330],['行政辦公室',1000,560,540,320],['往二樓樓梯',1330,875,230,110]
+  ]},
+  2:{name:'圖書館 2F',spawn:{x:1320,y:810},stairs:{x:1415,y:810},zones:[
+    ['閱讀座位',140,20,1300,80],['書庫',150,110,1320,330],['中央閱讀區',140,470,1190,390],['討論室',15,20,100,150],['左側閱讀桌',15,180,100,780],['右側討論室',1490,20,95,150],['右側閱讀桌',1490,180,95,460],['往一樓樓梯',1350,650,150,300],['儲物室',1500,720,85,240]
+  ]}
+};
+const objects={
+  1:[
+    {id:'locker',x:80,y:785,r:42,label:'置物櫃',icon:'🎒',kind:'locker'},
+    {id:'screen1',x:65,y:110,r:36,label:'討論室螢幕',icon:'🖥️',kind:'info'},
+    {id:'discussion1',x:485,y:115,r:42,label:'討論室',icon:'💬',kind:'info'},
+    {id:'sdgs',x:515,y:205,r:40,label:'SDGs 專區',icon:'🌏',kind:'info'},
+    {id:'periodicals',x:825,y:395,r:45,label:'期刊雜誌區',icon:'📰',kind:'periodicals'},
+    {id:'reading1',x:1190,y:285,r:45,label:'一樓閱讀區',icon:'📖',kind:'reading'},
+    {id:'newbooks',x:590,y:735,r:44,label:'新書展示區',icon:'✨',kind:'info'},
+    {id:'notice',x:270,y:660,r:38,label:'公布欄',icon:'📌',kind:'info'},
+    {id:'return',x:895,y:625,r:42,label:'借還書櫃台',icon:'↩️',kind:'return'},
+    {id:'service',x:900,y:720,r:44,label:'讀者服務櫃台',icon:'🪪',kind:'service'},
+    {id:'search',x:1250,y:505,r:45,label:'資訊檢索電腦',icon:'🔎',kind:'search'},
+    {id:'special',x:1465,y:220,r:42,label:'梅高特藏區',icon:'🏛️',kind:'special'},
+    {id:'machine',x:1490,y:455,r:40,label:'事務機器',icon:'🖨️',kind:'machine'},
+    {id:'stairs1',x:1430,y:920,r:50,label:'前往 2F',icon:'⬆️',kind:'stairsUp'}
+  ],
+  2:[
+    {id:'shelfA',x:410,y:250,r:45,label:'A3 書架',icon:'📚',kind:'shelf'},
+    {id:'shelfComic',x:1260,y:250,r:42,label:'漫畫區',icon:'💥',kind:'comic'},
+    {id:'read2',x:1270,y:760,r:46,label:'二樓閱讀桌',icon:'📖',kind:'quiet'},
+    {id:'screen2',x:1285,y:670,r:38,label:'閱讀區螢幕',icon:'🖥️',kind:'info'},
+    {id:'discussion2',x:1540,y:105,r:40,label:'討論室',icon:'💬',kind:'info'},
+    {id:'stairs2',x:1415,y:810,r:52,label:'返回 1F',icon:'⬇️',kind:'stairsDown'}
+  ]
+};
+const missions=[
+  {title:'任務 1｜入館準備',text:'到入口左側「置物櫃」，整理不能帶入館內的物品。',hint:'目標位於一樓左下方。',floor:1,target:'locker',cat:'禮儀'},
+  {title:'任務 2｜認識一樓',text:'依序走訪期刊區、梅高特藏區與資訊檢索區。',hint:'三個地點都會出現藍色光圈。',floor:1,target:'periodicals',cat:'空間'},
+  {title:'任務 3｜查詢館藏',text:'使用資訊檢索電腦，查出任務書籍所在位置。',hint:'資訊檢索電腦位於一樓右側。',floor:1,target:'search',cat:'資源'},
+  {title:'任務 4｜二樓找書',text:'前往二樓 A3 書架，辨識可以外借的資料。',hint:'先從一樓右下方樓梯上樓。',floor:2,target:'shelfA',cat:'空間'},
+  {title:'任務 5｜安靜共讀',text:'到二樓閱讀桌完成「安靜 8 秒」挑戰。',hint:'閱讀桌位於二樓中央偏右。',floor:2,target:'read2',cat:'禮儀'},
+  {title:'任務 6｜完成借書',text:'攜書回到一樓讀者服務櫃台，完成借書程序。',hint:'由二樓右側樓梯回一樓。',floor:1,target:'service',cat:'規則'},
+  {title:'任務 7｜設備與續借',text:'先到事務機器完成費用挑戰，再到借還書櫃台處理續借情境。',hint:'兩處都在一樓右側。',floor:1,target:'machine',cat:'規則'}
+];
+let state={
+  started:false,name:'新生',className:'',floor:1,player:{x:800,y:925,vx:0,vy:0,dir:'up'},mission:0,score:0,
+  visited:[],hasBook:false,stored:false,searched:false,quietDone:false,machineDone:false,completed:false,
+  cats:{空間:0,規則:0,資源:0,禮儀:0},errors:0,actions:[],startAt:null,lastSave:0,sound:true,showTarget:false
+};
+let keys={},touchDirs=new Set(),nearObj=null,lastTime=performance.now(),zoneNow='',toastTimer=null,audioCtx=null,ambientGain=null;
+const npcs=[
+ {floor:1,x:920,y:700,vx:0,vy:0,name:'館員',type:'staff',path:[[920,700],[900,600]],i:0},
+ {floor:1,x:1140,y:300,vx:0,vy:0,name:'閱讀中的同學',type:'student',path:[[1140,300],[1260,300],[1260,365],[1140,365]],i:0},
+ {floor:1,x:520,y:580,vx:0,vy:0,name:'圖書股長',type:'student',path:[[520,580],[690,580],[690,645],[520,645]],i:0},
+ {floor:2,x:760,y:520,vx:0,vy:0,name:'找書的同學',type:'student',path:[[760,520],[880,520],[880,670],[760,670]],i:0},
+ {floor:2,x:260,y:780,vx:0,vy:0,name:'閱讀中的同學',type:'student',path:[[260,780],[470,780]],i:0}
+];
+function freshState(name='新生',className=''){
+ return {started:true,name:name||'新生',className:className||'',floor:1,player:{x:800,y:925,vx:0,vy:0,dir:'up'},mission:0,score:0,visited:[],hasBook:false,stored:false,searched:false,quietDone:false,machineDone:false,completed:false,cats:{空間:0,規則:0,資源:0,禮儀:0},errors:0,actions:[],startAt:new Date().toISOString(),lastSave:0,sound:true,showTarget:false};
+}
+function resize(){
+ const r=$('#stage').getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);canvas.width=Math.floor(r.width*d);canvas.height=Math.floor(r.height*d);canvas.style.width=r.width+'px';canvas.style.height=r.height+'px';ctx.setTransform(d,0,0,d,0,0);ctx.imageSmoothingEnabled=false;
+}
+addEventListener('resize',resize); addEventListener('orientationchange',()=>setTimeout(resize,120)); resize();
+function logAction(type,detail,points=0){state.actions.push({time:new Date().toISOString(),type,detail,points}); if(state.actions.length>80)state.actions.shift(); save();}
+function save(){if(!state.started)return;localStorage.setItem('ymhs_library_current_v2',JSON.stringify(state));state.lastSave=Date.now();}
+function loadCurrent(){try{return JSON.parse(localStorage.getItem('ymhs_library_current_v2')||'null')}catch(e){return null}}
+function records(){try{return JSON.parse(localStorage.getItem('ymhs_library_records_v2')||'[]')}catch(e){return []}}
+function updateRecords(rec){const arr=records();arr.unshift(rec);localStorage.setItem('ymhs_library_records_v2',JSON.stringify(arr.slice(0,100)));}
+function initAudio(){if(audioCtx)return;audioCtx=new (window.AudioContext||window.webkitAudioContext)();ambientGain=audioCtx.createGain();ambientGain.gain.value=.018;ambientGain.connect(audioCtx.destination);const osc=audioCtx.createOscillator();osc.type='sine';osc.frequency.value=92;osc.connect(ambientGain);osc.start();}
+function tone(freq=440,dur=.12,type='square',vol=.06){if(!state.sound)return;initAudio();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type;o.frequency.setValueAtTime(freq,audioCtx.currentTime);g.gain.setValueAtTime(vol,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+dur);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+dur)}
+function successSound(){tone(523,.1);setTimeout(()=>tone(659,.12),90);setTimeout(()=>tone(784,.18),180)}
+function errorSound(){tone(180,.18,'sawtooth',.05)}
+function toast(t,ms=2300){const el=$('#toast');el.textContent=t;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),ms)}
+function openOverlay(id){$('#'+id).classList.add('open')}
+function closeOverlay(id){$('#'+id).classList.remove('open')}
+function showDialog(title,html){$('#dialogTitle').textContent=title;$('#dialogBody').innerHTML=html;openOverlay('dialogOverlay')}
+function closeDialog(){closeOverlay('dialogOverlay')}
+function addPoints(n,cat,detail){state.score+=n;state.cats[cat]=Math.min(100,(state.cats[cat]||0)+n*2);logAction('得分',detail,n);tone(660,.09)}
+function wrong(detail){state.errors++;state.score=Math.max(0,state.score-2);logAction('修正',detail,-2);errorSound()}
+function advance(){if(state.mission>=missions.length-1){finishGame();return}state.mission++;state.showTarget=false;updateHUD();save();successSound();toast('任務完成！下一站：'+missions[state.mission].title,3200)}
+function completeCurrentByTeacher(){if(state.mission===0)state.stored=true;if(state.mission===2)state.searched=true;if(state.mission===3)state.hasBook=true;if(state.mission===4)state.quietDone=true;if(state.mission===6)state.machineDone=true;addPoints(5,missions[state.mission].cat,'教師模式完成任務');advance();}
+function updateHUD(){
+ const m=state.completed?{title:'闖關完成',text:'你已完成全部任務。',hint:'可查看學習成果或再玩一次。'}:missions[Math.min(state.mission,missions.length-1)];$('#floorHud').textContent=state.floor+'F';$('#scoreHud').textContent=state.score;$('#missionHud').textContent=m?m.title.replace(/任務 \d+｜/,''):'';$('#progressText').textContent=Math.min(state.mission,7)+'/7';$('#progressFill').style.width=(Math.min(state.mission,7)/7*100)+'%';$('#missionTitle').textContent=m?.title||'完成';$('#missionText').textContent=m?.text||'';$('#missionHint').textContent=m?.hint||'';$('#menuMission').textContent=m?.title||'完成';$('#menuHint').textContent=m?.hint||'';$('#soundBtn').textContent=state.sound?'🔊':'🔇';
+}
+function pointInRect(x,y,r){return x>=r[0]&&x<=r[0]+r[2]&&y>=r[1]&&y<=r[1]+r[3]}
+function zoneAt(x,y){for(const z of mapData[state.floor].zones){if(pointInRect(x,y,[z[1],z[2],z[3],z[4]]))return z[0]}return mapData[state.floor].name}
+function updateZone(){const z=zoneAt(state.player.x,state.player.y);if(z!==zoneNow){zoneNow=z;const el=$('#zoneLabel');el.textContent=z;el.style.opacity=1;setTimeout(()=>{if(el.textContent===z)el.style.opacity=0},1600)}}
+function obstacles(f){
+ if(f===1)return [
+  [125,25,730,155],[170,195,665,48],[230,270,250,70],[540,270,250,70],
+  [220,370,590,50],[220,432,590,50],[220,520,590,35],[410,680,380,115],
+  [840,535,120,245],[990,550,560,335],[990,430,400,110],
+  [1030,130,95,65],[1170,130,95,65],[1310,130,75,65],
+  [1030,250,95,65],[1170,250,95,65],[1310,250,75,65],
+  [1030,370,95,65],[1170,370,95,65],[1310,370,75,65],
+  [1390,50,165,350],[1440,405,110,95],[20,660,110,325]
+ ];
+ const obs=[[130,10,1330,95],[5,10,115,950],[1480,10,110,630],[1490,705,100,270]];
+ for(let i=0;i<10;i++)obs.push([180+i*125,140,75,270]);
+ for(let r=0;r<3;r++){obs.push([185,500+r*115,470,75]);obs.push([755,500+r*115,470,75]);}
+ return obs;
+}
+function rectHit(x,y,sz,r){return x+sz>r[0]&&x-sz<r[0]+r[2]&&y+sz>r[1]&&y-sz<r[1]+r[3]}
+function canMove(x,y){const sz=14;if(x<22||y<22||x>WORLD.w-22||y>WORLD.h-22)return false;for(const r of obstacles(state.floor)){if(rectHit(x,y,sz,r))return false}return true}
+function movePlayer(dt){let dx=0,dy=0;if(keys.ArrowUp||keys.w||keys.W||touchDirs.has('up'))dy-=1;if(keys.ArrowDown||keys.s||keys.S||touchDirs.has('down'))dy+=1;if(keys.ArrowLeft||keys.a||keys.A||touchDirs.has('left'))dx-=1;if(keys.ArrowRight||keys.d||keys.D||touchDirs.has('right'))dx+=1;if(dx&&dy){dx*=.707;dy*=.707}const speed=235;const nx=state.player.x+dx*speed*dt,ny=state.player.y+dy*speed*dt;if(canMove(nx,state.player.y))state.player.x=nx;if(canMove(state.player.x,ny))state.player.y=ny;if(dx||dy){state.player.dir=Math.abs(dx)>Math.abs(dy)?(dx>0?'right':'left'):(dy>0?'down':'up')}}
+function updateNPCs(dt){for(const n of npcs){if(n.floor!==state.floor)continue;const target=n.path[n.i],dx=target[0]-n.x,dy=target[1]-n.y,d=Math.hypot(dx,dy);if(d<5)n.i=(n.i+1)%n.path.length;else{n.x+=dx/d*28*dt;n.y+=dy/d*28*dt}}}
+function nearestObject(){let best=null,bd=999;for(const o of objects[state.floor]){const d=Math.hypot(state.player.x-o.x,state.player.y-o.y);if(d<o.r+65&&d<bd){best=o;bd=d}}return best}
+function camera(){const r=$('#stage').getBoundingClientRect();const vw=r.width,vh=r.height;let scale=Math.max(.72,Math.min(1.2,Math.min(vw/900,vh/560)));if(innerWidth<600)scale=.82;const viewW=vw/scale,viewH=vh/scale;let cx=state.player.x-viewW/2,cy=state.player.y-viewH/2;cx=Math.max(0,Math.min(WORLD.w-viewW,cx));cy=Math.max(0,Math.min(WORLD.h-viewH,cy));return {x:cx,y:cy,s:scale,vw,vh,viewW,viewH}}
+function pxRect(x,y,w,h,fill,stroke='#15293d',lw=4){ctx.fillStyle=fill;ctx.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h));if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=lw;ctx.strokeRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h))}}
+function text(t,x,y,size=16,color='#11253a',align='center'){ctx.fillStyle=color;ctx.font=`900 ${size}px "Microsoft JhengHei",sans-serif`;ctx.textAlign=align;ctx.textBaseline='middle';ctx.fillText(t,x,y)}
+function drawFloorBase(){
+ ctx.fillStyle=COLORS.floor;ctx.fillRect(0,0,WORLD.w,WORLD.h);for(let y=0;y<WORLD.h;y+=32){for(let x=0;x<WORLD.w;x+=64){ctx.fillStyle=((x/64+y/32)%2)?COLORS.floor2:'#b58759';ctx.fillRect(x,y,64,2)}}
+ pxRect(5,5,WORLD.w-10,WORLD.h-10,'transparent',COLORS.wall,10);
+}
+function drawTable(x,y,w,h){pxRect(x,y,w,h,COLORS.desk,'#4d3727',4);for(let i=12;i<w-8;i+=40){pxRect(x+i,y-12,24,12,COLORS.chair,'#19283a',2);pxRect(x+i,y+h,24,12,COLORS.chair,'#19283a',2)}}
+function drawShelf(x,y,w,h){pxRect(x,y,w,h,COLORS.shelf,'#2c2030',4);for(let yy=y+8;yy<y+h-6;yy+=20){ctx.fillStyle='#3f2b25';ctx.fillRect(x+4,yy,w-8,3);let xx=x+7,k=0;while(xx<x+w-8){const bw=5+(k%3)*2;ctx.fillStyle=COLORS.book[(k+Math.floor(y/20))%COLORS.book.length];ctx.fillRect(xx,yy-12,bw,12);xx+=bw+3;k++}}}
+function drawPlant(x,y){ctx.fillStyle='#4b3027';ctx.fillRect(x-8,y+5,16,14);ctx.fillStyle='#2f6f47';for(let i=0;i<6;i++){ctx.fillRect(x-13+i*5,y-8-(i%2)*5,10,18)}ctx.fillStyle='#62a55a';ctx.fillRect(x-3,y-15,8,18)}
+function drawComputer(x,y){pxRect(x,y,34,24,'#a8cbe2','#25394f',3);ctx.fillStyle='#244760';ctx.fillRect(x+5,y+5,24,13);pxRect(x+12,y+25,10,5,'#73879b','#25394f',2)}
+function drawMap1(){drawFloorBase();
+ // discussion room
+ pxRect(125,25,730,155,'#8d724f',COLORS.wall,7);pxRect(150,55,55,65,'#86b9d8');drawComputer(175,70);drawTable(300,70,330,60);text('討論室',490,48,18,'#f9e3a1');drawPlant(785,125);
+ // SDGs and left area
+ pxRect(170,195,665,48,'#9fbf9a',COLORS.wall,4);text('SDGs 專區',500,219,18);drawPlant(210,215);drawPlant(795,215);
+ for(let j=0;j<2;j++)drawTable(230+j*310,270,250,70);for(let j=0;j<2;j++)drawShelf(220,370+j*62,590,50);text('期刊・雜誌',515,352,15,'#fff3c3');
+ drawTable(220,520,590,35);pxRect(225,610,260,18,'#24465a');text('公布欄',355,598,14,'#fff');pxRect(410,680,380,115,'#9cb7ca',COLORS.wall,5);text('新書展示區',600,738,18);for(let i=0;i<5;i++)drawShelf(435+i*68,700,52,62);
+ // left locker
+ pxRect(20,660,110,325,'#91a9b8',COLORS.wall,5);for(let y=680;y<955;y+=55){ctx.strokeStyle='#304b60';ctx.lineWidth=2;ctx.strokeRect(30,y,90,45);ctx.fillStyle='#f0d371';ctx.fillRect(105,y+20,5,5)}text('置物櫃',75,815,18);
+ // central service
+ pxRect(840,535,120,245,'#a8c1cf',COLORS.wall,5);text('借還書',900,565,14);text('櫃台',900,590,14);drawTable(835,650,130,50);drawComputer(880,610);
+ // right reading
+ pxRect(995,85,390,350,'#789aa9',COLORS.wall,6);for(let yy=130;yy<390;yy+=120)for(let xx=1030;xx<1340;xx+=140)drawTable(xx,yy,95,65);text('閱讀區',1190,105,18,'#fff4c8');
+ pxRect(995,35,390,42,'#a4c7e0',COLORS.wall,4);text('展示螢幕',1190,56,16);drawComputer(1175,42);
+ // info + office
+ pxRect(990,430,550,110,'#9db9c9',COLORS.wall,6);text('資訊檢索區',1265,450,17);for(let x=1025;x<1500;x+=90)drawComputer(x,475);
+ pxRect(990,550,560,335,'#6e8492',COLORS.wall,7);ctx.fillStyle='#9e815e';ctx.fillRect(1010,575,520,285);text('行政辦公室',1270,710,24,'#f7e6bd');drawTable(1110,610,300,65);drawPlant(1500,835);
+ // special and machine
+ pxRect(1390,50,165,350,'#91a9b9',COLORS.wall,6);text('梅高',1472,82,18);text('特藏區',1472,108,18);drawShelf(1435,120,80,230);
+ pxRect(1440,405,110,95,'#a7c2d1',COLORS.wall,5);text('事務',1495,432,14);text('機器',1495,455,14);drawComputer(1477,463);
+ // stairs/entry
+ pxRect(1335,885,220,95,'#9db8c8',COLORS.wall,5);for(let y=895;y<965;y+=12){ctx.fillStyle=y%24?'#dce7ed':'#9fb3c2';ctx.fillRect(1350,y,180,8)}text('往 2F',1440,925,16);ctx.fillStyle='#1b3a4e';ctx.fillRect(720,970,170,20);text('大門',805,950,18,'#fff3c2');
+ // decor
+ drawPlant(155,610);drawPlant(830,800);drawPlant(970,405);
+}
+function drawMap2(){drawFloorBase();
+ pxRect(130,10,1330,95,'#9db8c8',COLORS.wall,6);text('閱讀座位',795,48,18);for(let x=180;x<1410;x+=85){ctx.fillStyle='#465c70';ctx.fillRect(x,75,50,18)}
+ pxRect(145,110,1325,345,'#9fb4c2',COLORS.wall,6);for(let i=0;i<10;i++)drawShelf(180+i*125,140,75,270);text('書庫',805,425,20,'#fff2bd');
+ pxRect(135,465,1205,410,'#9db9c6',COLORS.wall,6);for(let r=0;r<3;r++){drawTable(185,500+r*115,470,75);drawTable(755,500+r*115,470,75)}text('閱讀區',700,670,18,'#fff1bd');
+ pxRect(5,10,115,160,'#a2bbc9',COLORS.wall,5);text('討論室',62,90,15);pxRect(5,180,115,780,'#a2bbc9',COLORS.wall,5);for(let y=230;y<900;y+=160)drawTable(25,y,75,70);text('閱讀桌',62,565,15);
+ pxRect(1480,10,110,160,'#a2bbc9',COLORS.wall,5);text('討論室',1535,90,15);pxRect(1480,180,110,460,'#a2bbc9',COLORS.wall,5);for(let y=230;y<580;y+=150)drawTable(1500,y,70,70);text('閱讀桌',1535,410,15);
+ pxRect(1340,640,155,330,'#aabfca',COLORS.wall,5);for(let y=660;y<935;y+=18){ctx.fillStyle=y%36?'#dce7ed':'#9fb3c2';ctx.fillRect(1360,y,115,11)}text('往 1F',1418,800,17);pxRect(1490,705,100,270,'#8da2b0',COLORS.wall,5);text('儲物室',1540,840,15);
+ drawComputer(1280,650);drawPlant(140,930);drawPlant(1450,600);
+}
+function drawNPC(n){ctx.save();ctx.translate(Math.round(n.x),Math.round(n.y));ctx.fillStyle='rgba(0,0,0,.25)';ctx.fillRect(-10,13,20,6);ctx.fillStyle=n.type==='staff'?'#315f8a':'#d0a36a';ctx.fillRect(-8,-5,16,22);ctx.fillStyle=n.type==='staff'?'#f4d568':'#6aa7d5';ctx.fillRect(-10,2,20,12);ctx.fillStyle='#f0c9a5';ctx.fillRect(-7,-15,14,12);ctx.fillStyle='#3c2c2c';ctx.fillRect(-7,-18,14,5);ctx.restore();
+ if(Math.hypot(state.player.x-n.x,state.player.y-n.y)<90){ctx.fillStyle='rgba(10,20,35,.9)';ctx.fillRect(n.x-45,n.y-52,90,22);text(n.name,n.x,n.y-41,11,'#fff')}}
+function drawPlayer(){const p=state.player;ctx.save();ctx.translate(Math.round(p.x),Math.round(p.y));ctx.fillStyle='rgba(0,0,0,.3)';ctx.fillRect(-11,14,22,6);ctx.fillStyle='#294c7c';ctx.fillRect(-9,-2,18,24);ctx.fillStyle='#f3d35b';ctx.fillRect(-11,2,22,12);ctx.fillStyle='#efc49b';ctx.fillRect(-7,-16,14,14);ctx.fillStyle='#2b2935';ctx.fillRect(-8,-19,16,6);ctx.fillStyle='#fff';if(p.dir==='left')ctx.fillRect(-6,-11,2,2);else if(p.dir==='right')ctx.fillRect(4,-11,2,2);else{ctx.fillRect(-5,-11,2,2);ctx.fillRect(3,-11,2,2)}ctx.restore();text(state.name,p.x,p.y-34,11,'#fff');}
+function drawObject(o,targeted){const pulse=4+Math.sin(performance.now()/220)*3;if(targeted||state.showTarget){ctx.strokeStyle=targeted?'#ffe36d':'#75d6ff';ctx.lineWidth=5;ctx.beginPath();ctx.arc(o.x,o.y,o.r+pulse,0,Math.PI*2);ctx.stroke()}ctx.fillStyle='rgba(255,255,255,.92)';ctx.fillRect(o.x-16,o.y-16,32,32);ctx.strokeStyle='#1a314d';ctx.lineWidth=3;ctx.strokeRect(o.x-16,o.y-16,32,32);ctx.font='22px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(o.icon,o.x,o.y+1);if(Math.hypot(state.player.x-o.x,state.player.y-o.y)<120){ctx.fillStyle='rgba(15,25,42,.88)';ctx.fillRect(o.x-46,o.y+25,92,22);text(o.label,o.x,o.y+36,11,'#fff')}}
+function currentTargets(){const m=state.mission;if(m===1){const order=['periodicals','special','search'];return order.filter(id=>!state.visited.includes(id))}if(m===6){return state.machineDone?['return']:['machine']}return [missions[m]?.target].filter(Boolean)}
+function render(){const cam=camera();ctx.setTransform(cam.s,0,0,cam.s,-cam.x*cam.s,-cam.y*cam.s);if(state.floor===1)drawMap1();else drawMap2();const targets=currentTargets();for(const o of objects[state.floor])drawObject(o,targets.includes(o.id));for(const n of npcs)if(n.floor===state.floor)drawNPC(n);drawPlayer();ctx.setTransform(1,0,0,1,0,0)}
+function loop(t){const dt=Math.min(.04,(t-lastTime)/1000);lastTime=t;if(state.started&&!document.querySelector('.overlay.open:not(#startOverlay)')){movePlayer(dt);updateNPCs(dt);updateZone();nearObj=nearestObject();$('#interactHint').style.display=nearObj?'flex':'none';if(nearObj)$('#interactText').textContent=nearObj.label;saveMaybe()}render();requestAnimationFrame(loop)}requestAnimationFrame(loop);
+function saveMaybe(){if(Date.now()-state.lastSave>2500)save()}
+function teleport(f,x,y){state.floor=f;state.player.x=x;state.player.y=y;state.player.vx=0;state.player.vy=0;updateHUD();save();tone(420,.12)}
+function interact(){if(!state.started)return;if(!nearObj){toast('再靠近一點，找到有光圈的物件。');return}const o=nearObj;logAction('互動',o.label,0);
+ if(o.kind==='stairsUp'){teleport(2,mapData[2].spawn.x,mapData[2].spawn.y);toast('已到圖書館二樓：書庫與閱讀區。');return}
+ if(o.kind==='stairsDown'){teleport(1,1400,900);toast('已回到圖書館一樓。');return}
+ if(o.kind==='locker')return lockerDialog();
+ if(o.kind==='periodicals')return visitPeriodicals(o);
+ if(o.kind==='special')return visitSpecial(o);
+ if(o.kind==='search')return searchDialog();
+ if(o.kind==='shelf')return shelfDialog();
+ if(o.kind==='comic')return infoDialog('漫畫區','漫畫書籍僅供館內閱讀，不開放外借。想帶走閱讀時，請改選一般圖書。');
+ if(o.kind==='quiet')return quietDialog();
+ if(o.kind==='service')return serviceDialog();
+ if(o.kind==='machine')return machineDialog();
+ if(o.kind==='return')return returnDialog();
+ if(o.kind==='reading')return infoDialog('一樓閱讀區','請保持安靜、避免奔跑，不可把椅子當作玩樂工具，也不要占用座位進行非閱讀活動。');
+ return infoDialog(o.label,infoText(o.id));
+}
+function infoText(id){const d={discussion1:'討論室可供教學與討論使用。班級借用需經導師同意並提前預約，同一時段原則上一個班級使用。',sdgs:'SDGs 專區提供永續發展主題閱讀資源，適合課程延伸與專題探究。',newbooks:'每學年會辦理新購圖書展，也會結合學科或特定主題舉辦書展。',notice:'可查看圖書館活動、新書展、閱讀心得與小論文比賽等公告。',screen1:'螢幕用於教師授課、活動或合法公播內容。',screen2:'二樓螢幕用於閱讀推廣與教學活動。',discussion2:'討論空間仍應控制音量，使用前依規定預約。'};return d[id]||'這是圖書館的學習空間，使用時請尊重其他讀者。'}
+function infoDialog(title,body){showDialog(title,`<div class="factBox">${body}</div><div class="btnRow"><button class="primary" onclick="window.gameUI.closeDialog()">知道了</button></div>`)}
+function lockerDialog(){const needed=state.mission===0;showDialog('入館前：整理隨身物品',`<p>請選出必須放進置物櫃、不能帶入館內的物品。</p><div class="itemSelect" id="lockerItems">
+<button class="item" data-v="bag">🎒 書包</button><button class="item" data-v="drink">🥤 飲料／礦泉水</button><button class="item" data-v="snack">🍪 食物</button><button class="item" data-v="id">🪪 學生證</button></div><p id="lockerMsg" class="note">可複選，再按確認。</p><div class="btnRow"><button id="lockerCheck" class="primary">確認整理</button></div>`);
+ const sel=new Set();$$('#lockerItems .item').forEach(b=>b.onclick=()=>{b.classList.toggle('selected');sel.has(b.dataset.v)?sel.delete(b.dataset.v):sel.add(b.dataset.v)});$('#lockerCheck').onclick=()=>{const ok=['bag','drink','snack'].every(v=>sel.has(v))&&!sel.has('id');if(ok){state.stored=true;addPoints(10,'禮儀','正確整理入館物品');$('#lockerMsg').innerHTML='<span class="statusGood">正確！</span> 書包、袋子、食物與飲料（含礦泉水）不可帶入；學生證需保留，以便借書或上課時間登記。';successSound();$('#lockerCheck').textContent='完成';$('#lockerCheck').onclick=()=>{closeDialog();if(needed&&state.mission===0)advance()}}else{wrong('入館物品判斷錯誤');$('#lockerMsg').innerHTML='<span class="statusBad">再想想：</span>學生證不是要寄放的物品。館內禁止飲食，書包與袋子也要放在館外置物櫃。'}}
+}
+function markVisit(id){if(!state.visited.includes(id)){state.visited.push(id);addPoints(5,'空間','走訪 '+id)}if(state.mission===1&&['periodicals','special','search'].every(x=>state.visited.includes(x))){closeDialog();advance()}}
+function visitPeriodicals(o){showDialog('期刊雜誌區',`<div class="factBox">一樓放置當月期刊與雜誌，<b>當期雜誌不開放外借</b>；過期雜誌會移到二樓書庫，視館藏規定供讀者使用。</div><div class="choiceGrid"><button class="choice" data-ok="0">把本月最新雜誌借回家</button><button class="choice" data-ok="1">在館內閱讀本月最新雜誌</button></div>`);bindChoices('在館內閱讀是正確做法。',()=>markVisit(o.id))}
+function visitSpecial(o){showDialog('梅高特藏區',`<div class="factBox">特藏包含歷屆畢業紀念冊、《梅高青年》、《梅岡風》等校史刊物，<b>不開放外借</b>。</div><div class="choiceGrid"><button class="choice" data-ok="1">在特藏區查閱，閱讀後放回</button><button class="choice" data-ok="0">直接帶回家收藏</button></div>`);bindChoices('特藏是珍貴校史資料，請在館內查閱。',()=>markVisit(o.id))}
+function bindChoices(successText,onSuccess){$$('#dialogBody .choice').forEach(b=>b.onclick=()=>{if(b.dataset.ok==='1'){b.classList.add('correct');addPoints(5,missions[state.mission]?.cat||'規則',successText);toast(successText);setTimeout(()=>{onSuccess?.();closeDialog()},700)}else{b.classList.add('wrong');wrong('選擇題錯誤');toast('這個選項不符合圖書館規定。')}})}
+function searchDialog(){
+ if(state.mission===1&&!state.visited.includes('search')){
+   markVisit('search');
+   if(state.mission!==2){infoDialog('資訊檢索區','館藏系統可用書名關鍵字、作者、ISBN 等欄位查詢，也可管理個人借閱資料與辦理線上續借。');return}
+ }
+ showDialog('館藏查詢任務',`<p>要找《原子習慣》，先選擇最適合的查詢方式。</p><div class="choiceGrid"><button class="choice" data-ok="1">以書名關鍵字「原子習慣」查詢</button><button class="choice" data-ok="0">在搜尋欄輸入「好看的書」</button><button class="choice" data-ok="0">不查詢，逐排翻找全部書架</button></div><div id="searchResult"></div>`);
+ $$('#dialogBody .choice').forEach(b=>b.onclick=()=>{if(b.dataset.ok==='1'){b.classList.add('correct');state.searched=true;addPoints(10,'資源','完成館藏查詢');$('#searchResult').innerHTML='<div class="factBox"><b>查詢結果：</b>《原子習慣》｜館藏位置：2F 書庫 A3。<br>借書動線：一樓查詢 → 二樓找書／取書 → 一樓櫃台借書。</div><div class="btnRow"><button id="searchDone" class="primary">記住位置</button></div>';$('#searchDone').onclick=()=>{closeDialog();if(state.mission===2)advance()}}else{b.classList.add('wrong');wrong('館藏查詢方式錯誤');toast('查詢可使用書名關鍵字、作者、ISBN 等明確欄位。')}})
+}
+function shelfDialog(){if(state.mission!==3&&!state.hasBook)return infoDialog('A3 書架','依查詢結果與索書號尋找圖書。取書後請到一樓櫃台完成借書。');showDialog('選出可以外借的資料',`<p>你在書架附近發現四種資料。哪一項可依一般借書規則借回家？</p><div class="choiceGrid"><button class="choice" data-ok="0">當期雜誌</button><button class="choice" data-ok="0">館內漫畫</button><button class="choice" data-ok="0">歷屆畢業紀念冊（梅高特藏）</button><button class="choice" data-ok="1">一般圖書《原子習慣》</button></div>`);bindChoices('找到可外借的一般圖書！',()=>{state.hasBook=true;advance()})}
+function quietDialog(){if(state.mission!==4&&state.quietDone)return infoDialog('閱讀桌','保持安靜、專心閱讀，離開時將座位整理好。');showDialog('安靜共讀挑戰',`<p>請保持閱讀空間安靜 8 秒。期間會出現情境，請選擇合宜行動。</p><div class="timerRing" id="quietTimer">8</div><div class="quietBar"><div id="quietFill" class="quietFill"></div></div><div id="quietEvent" class="factBox">準備好了就開始。</div><div class="btnRow"><button id="quietStart" class="primary">開始挑戰</button></div>`);$('#quietStart').onclick=()=>runQuiet()}
+function runQuiet(){let sec=8,quality=100;$('#quietStart').disabled=true;const events={6:['朋友傳訊息給你，你會？',['在館內開擴音回覆','先靜音，離館後再處理'],1],4:['旁邊同學在閱讀，你會？',['輕聲走動並避免碰撞桌椅','快速奔跑去找朋友'],0],2:['想換座位時，你會？',['把椅子滑來滑去玩','輕放椅子並整理原座位'],1]};const timer=setInterval(()=>{sec--;$('#quietTimer').textContent=sec;$('#quietFill').style.width=(sec/8*100)+'%';if(events[sec]){clearInterval(timer);const [q,opts,ok]=events[sec];$('#quietEvent').innerHTML=`<b>${q}</b><div class="choiceGrid">${opts.map((x,i)=>`<button class="choice" data-i="${i}">${x}</button>`).join('')}</div>`;$$('#quietEvent .choice').forEach(b=>b.onclick=()=>{if(+b.dataset.i===ok){b.classList.add('correct');tone(660,.08)}else{b.classList.add('wrong');quality-=25;wrong('安靜情境選擇錯誤')}setTimeout(()=>{$('#quietEvent').textContent='保持安靜閱讀中…';resume()},450)});function resume(){const t2=setInterval(()=>{sec--;$('#quietTimer').textContent=sec;$('#quietFill').style.width=(sec/8*100)+'%';if(events[sec]){clearInterval(t2);const [q2,opts2,ok2]=events[sec];$('#quietEvent').innerHTML=`<b>${q2}</b><div class="choiceGrid">${opts2.map((x,i)=>`<button class="choice" data-i="${i}">${x}</button>`).join('')}</div>`;$$('#quietEvent .choice').forEach(b=>b.onclick=()=>{if(+b.dataset.i===ok2){b.classList.add('correct');tone(660,.08)}else{b.classList.add('wrong');quality-=25;wrong('安靜情境選擇錯誤')}setTimeout(()=>{$('#quietEvent').textContent='保持安靜閱讀中…';resume()},450)})}else if(sec<=0){clearInterval(t2);quietFinish(quality)}} ,1000)}}else if(sec<=0){clearInterval(timer);quietFinish(quality)}},1000)}
+function quietFinish(q){state.quietDone=true;addPoints(q===100?15:10,'禮儀','完成安靜共讀挑戰');$('#quietEvent').innerHTML=`<span class="statusGood">挑戰完成！</span> 安靜指數 ${q}%。館內應避免喧嘩、奔跑、製造髒亂或把椅子當玩具。`;$('#quietStart').disabled=false;$('#quietStart').textContent='完成';$('#quietStart').onclick=()=>{closeDialog();if(state.mission===4)advance()};successSound()}
+function serviceDialog(){if(state.mission!==5)return infoDialog('讀者服務櫃台','借書、還書、催書、場地與設備服務都可向館員洽詢。借書時請攜帶學生證。');if(!state.hasBook){toast('你還沒有從二樓找到任務書籍。');return}showDialog('借書程序',`<div class="factBox">你已帶著一般圖書與學生證來到櫃台。請選擇正確借閱規則。</div><div class="choiceGrid"><button class="choice" data-ok="0">最多 2 本，借 1 週</button><button class="choice" data-ok="1">最多 4 本，借 2 週</button><button class="choice" data-ok="0">不限本數，借 1 個月</button></div>`);bindChoices('正確：學生每人最多借 4 本，借期 2 週。',()=>advance())}
+function machineDialog(){showDialog('事務機器挑戰',`<div class="factBox">影印／列印需自備悠遊卡，餘額至少 10 元。黑白每頁 2 元，彩色每頁 6 元；掃描只需過卡，不收費。</div><p>列印 3 頁黑白，再列印 1 頁彩色，共需多少元？</p><div class="choiceGrid"><button class="choice" data-ok="0">8 元</button><button class="choice" data-ok="1">12 元</button><button class="choice" data-ok="0">18 元</button><button class="choice" data-ok="0">掃描也要加 2 元</button></div>`);bindChoices('3×2＋1×6＝12 元；掃描不收費。',()=>{state.machineDone=true;if(state.mission===6){toast('設備挑戰完成，請前往借還書櫃台。');updateHUD()}})}
+function returnDialog(){if(state.mission!==6)return infoDialog('借還書櫃台','借出圖書須於到期前歸還。若逾期，會依逾期天數暫停借閱權限。');if(!state.machineDone){toast('請先完成事務機器挑戰。');return}showDialog('續借與逾期情境',`<p>你的書明天到期，還想再閱讀兩週，現在應該怎麼做？</p><div class="choiceGrid"><button class="choice" data-ok="1">今天到圖書館或上館藏系統辦理續借</button><button class="choice" data-ok="0">等逾期一週後再處理</button><button class="choice" data-ok="0">自行把到期日改掉</button></div>`);bindChoices('可於到期前 1–2 日辦理續借，續借期為 2 週。',()=>finishGame())}
+function finishGame(){if(state.completed){openOverlay('resultOverlay');return}state.completed=true;state.mission=7;addPoints(20,'規則','完成全部闖關');const end=new Date(),mins=Math.max(1,Math.round((end-new Date(state.startAt))/60000));const avg=Math.round(Object.values(state.cats).reduce((a,b)=>a+b,0)/4);const rec={name:state.name,className:state.className,score:state.score,errors:state.errors,minutes:mins,completedAt:end.toISOString(),cats:state.cats,actions:state.actions.length};updateRecords(rec);localStorage.removeItem('ymhs_library_current_v2');updateHUD();$('#resultBody').innerHTML=resultHTML(rec,avg);openOverlay('resultOverlay');successSound();setTimeout(successSound,400)}
+function resultHTML(rec,avg){const level=rec.score>=100?'金牌圖書館達人':rec.score>=75?'銀牌閱讀探索者':'銅牌新生讀者';return `<div class="medal">${rec.score>=100?'🏆':rec.score>=75?'🥈':'🥉'}</div><h2 style="text-align:center;margin:0">${level}</h2><p style="text-align:center">${rec.className?rec.className+' ｜ ':''}${rec.name}，你完成了楊梅高中圖書館新生利用教育！</p><div class="resultGrid"><div class="resultCard">素養分數<b>${rec.score}</b></div><div class="resultCard">完成時間<b>${rec.minutes} 分</b></div><div class="resultCard">修正次數<b>${rec.errors}</b></div><div class="resultCard">熟悉程度<b>${avg}%</b></div></div>${barsHTML(rec.cats)}<div class="factBox"><b>你已學會：</b>空間定位、館藏查詢、找書與借書流程、館內閱讀禮儀、事務機器費用，以及續借與逾期規則。</div><div class="btnRow"><button class="primary" onclick="window.print()">列印成果</button><button class="secondary" onclick="location.reload()">再玩一次</button></div>`}
+function barsHTML(c){return `<div style="margin-top:14px">${Object.entries(c).map(([k,v])=>`<div class="barRow"><b>${k}</b><div class="bar"><i style="width:${Math.min(100,v)}%"></i></div><span>${Math.min(100,v)}%</span></div>`).join('')}</div>`}
+function historyHTML(){const m=missions[state.mission];return `<div class="resultGrid"><div class="resultCard">目前分數<b>${state.score}</b></div><div class="resultCard">完成任務<b>${Math.min(state.mission,7)}/7</b></div></div>${barsHTML(state.cats)}<div class="factBox"><b>目前任務：</b>${m?.title||'已完成'}<br>${m?.text||''}</div><div class="miniTitle">操作紀錄</div><div class="log">${state.actions.length?state.actions.slice().reverse().map(a=>`${new Date(a.time).toLocaleTimeString()}｜${a.type}｜${a.detail}${a.points?' ('+a.points+')':''}`).join('<br>'):'尚無紀錄'}</div>`}
+function mapHTML(){const f=state.floor;const loc=zoneAt(state.player.x,state.player.y);return `<div class="factBox"><b>目前位置：</b>${mapData[f].name}｜${loc}<br><b>任務目標：</b>${missions[state.mission]?.title||'完成'}</div><div style="position:relative;aspect-ratio:16/10;background:#c49a6c;border:4px solid #162b43;border-radius:8px;overflow:hidden">${mapData[f].zones.map(z=>`<div style="position:absolute;left:${z[1]/16}%;top:${z[2]/10}%;width:${z[3]/16}%;height:${z[4]/10}%;background:rgba(142,184,210,.7);border:1px solid #27435f;font-size:9px;display:grid;place-items:center;text-align:center">${z[0]}</div>`).join('')}<div style="position:absolute;left:${state.player.x/16}%;top:${state.player.y/10}%;transform:translate(-50%,-50%);font-size:22px">🧑‍🎓</div></div><p class="note">地圖依楊梅高中圖書館 1F、2F 空間配置圖轉製。遊戲場景為操作友善而進行比例與動線調整。</p>`}
+function renderRecords(){const arr=records();if(!arr.length){$('#recordsTable').innerHTML='<p style="padding:12px">尚無完成紀錄。</p>';return}$('#recordsTable').innerHTML=`<table><thead><tr><th>完成時間</th><th>班級</th><th>姓名</th><th>分數</th><th>分鐘</th><th>修正</th><th>空間</th><th>規則</th><th>資源</th><th>禮儀</th></tr></thead><tbody>${arr.map(r=>`<tr><td>${new Date(r.completedAt).toLocaleString()}</td><td>${r.className||''}</td><td>${r.name}</td><td>${r.score}</td><td>${r.minutes}</td><td>${r.errors}</td><td>${r.cats?.空間||0}</td><td>${r.cats?.規則||0}</td><td>${r.cats?.資源||0}</td><td>${r.cats?.禮儀||0}</td></tr>`).join('')}</tbody></table>`}
+function exportCSV(){const arr=records();const rows=[['完成時間','班級','姓名','分數','分鐘','修正次數','空間','規則','資源','禮儀'],...arr.map(r=>[r.completedAt,r.className,r.name,r.score,r.minutes,r.errors,r.cats?.空間||0,r.cats?.規則||0,r.cats?.資源||0,r.cats?.禮儀||0])];const csv='\ufeff'+rows.map(row=>row.map(v=>'"'+String(v??'').replaceAll('"','""')+'"').join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='楊梅高中圖書館新生闖關紀錄.csv';a.click();URL.revokeObjectURL(a.href)}
+function targetTeleport(){const m=missions[state.mission];let f=m.floor,id=m.target;if(state.mission===1)id=currentTargets()[0]||'search';if(state.mission===6)id=state.machineDone?'return':'machine';if(f!==state.floor)state.floor=f;const o=objects[f].find(x=>x.id===id);if(o){state.player.x=Math.max(30,o.x-70);state.player.y=o.y;updateHUD();save()}}
+// UI bindings
+$('#startBtn').onclick=()=>{initAudio();state=freshState($('#studentName').value,$('#studentClass').value);closeOverlay('startOverlay');updateHUD();toast('第一站：到左側置物櫃整理物品。',3000);save()};
+const saved=loadCurrent();if(saved&&!saved.completed){$('#resumeBtn').style.display='inline-block';$('#resumeBtn').onclick=()=>{state=saved;state.started=true;closeOverlay('startOverlay');updateHUD();toast('已載入上次進度。')}}
+$('#teacherStartBtn').onclick=()=>{renderRecords();openOverlay('teacherOverlay')};$('#menuBtn').onclick=()=>openOverlay('menuOverlay');$('#continueBtn').onclick=()=>closeOverlay('menuOverlay');$('#soundBtn').onclick=()=>{state.sound=!state.sound;if(state.sound)initAudio();updateHUD();save()};$('#actionBtn').onclick=interact;$('#bagBtn').onclick=()=>{$('#historyBody').innerHTML=historyHTML();openOverlay('historyOverlay')};$('#mapBtn').onclick=()=>{$('#mapBody').innerHTML=mapHTML();openOverlay('mapOverlay')};$('#historyBtn').onclick=()=>{$('#historyBody').innerHTML=historyHTML();closeOverlay('menuOverlay');openOverlay('historyOverlay')};$('#teacherBtn').onclick=()=>{renderRecords();closeOverlay('menuOverlay');openOverlay('teacherOverlay')};$('#restartBtn').onclick=()=>{if(confirm('確定要清除目前進度並重新開始嗎？')){localStorage.removeItem('ymhs_library_current_v2');location.reload()}};$('#dialogClose').onclick=closeDialog;$$('[data-close]').forEach(b=>b.onclick=()=>closeOverlay(b.dataset.close));
+$$('.pad button').forEach(b=>{const d=b.dataset.dir;const start=e=>{e.preventDefault();touchDirs.add(d)};const end=e=>{e.preventDefault();touchDirs.delete(d)};b.addEventListener('pointerdown',start);b.addEventListener('pointerup',end);b.addEventListener('pointercancel',end);b.addEventListener('pointerleave',end)});
+addEventListener('keydown',e=>{keys[e.key]=true;if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();if((e.key==='e'||e.key==='E'||e.key===' ')&&!document.querySelector('.overlay.open'))interact();if(e.key==='m'||e.key==='M'){$('#mapBody').innerHTML=mapHTML();openOverlay('mapOverlay')}if(e.key==='Escape')document.querySelectorAll('.overlay.open').forEach(x=>{if(x.id!=='startOverlay')x.classList.remove('open')})});addEventListener('keyup',e=>keys[e.key]=false);
+$$('.tabBtn').forEach(b=>b.onclick=()=>{$$('.tabBtn').forEach(x=>x.classList.remove('active'));$$('.teacherSection').forEach(x=>x.classList.remove('active'));b.classList.add('active');$('#'+b.dataset.tab).classList.add('active');if(b.dataset.tab==='teachRecords')renderRecords()});
+missions.forEach((m,i)=>$('#missionSelect').insertAdjacentHTML('beforeend',`<option value="${i}">${m.title}</option>`));$('#showTargetBtn').onclick=()=>{state.showTarget=!state.showTarget;$('#showTargetBtn').textContent=state.showTarget?'隱藏任務目標':'顯示任務目標';save()};$('#jump1Btn').onclick=()=>teleport(1,800,925);$('#jump2Btn').onclick=()=>teleport(2,1320,810);$('#completeMissionBtn').onclick=completeCurrentByTeacher;$('#goMissionBtn').onclick=()=>{state.mission=+$('#missionSelect').value;targetTeleport();updateHUD();closeOverlay('teacherOverlay')};$('#clearCurrentBtn').onclick=()=>{if(confirm('清除目前遊戲進度？')){localStorage.removeItem('ymhs_library_current_v2');location.reload()}};$('#exportBtn').onclick=exportCSV;$('#clearRecordsBtn').onclick=()=>{if(confirm('確定清除所有學生完成紀錄？')){localStorage.removeItem('ymhs_library_records_v2');renderRecords()}};
+window.gameUI={closeDialog};updateHUD();
+})();
+</script>
+</body>
+</html>
